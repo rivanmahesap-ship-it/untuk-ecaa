@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dari Rivan, Untuk Eca</title>
+    <!-- Library JavaScript untuk membuat gambar barcode asli secara otomatis -->
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        /* Tampilan Awal: Tombol Pembuka */
+        .welcome-screen {
+            background-color: #ffffff;
+            padding: 40px 30px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+        .btn-open {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
+            transition: 0.3s;
+        }
+        .btn-open:hover {
+            transform: scale(1.05);
+            background-color: #c0392b;
+        }
+
+        /* Tampilan Utama Surat */
+        .main-card {
+            display: none;
+            background-color: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            padding: 30px;
+            max-width: 480px;
+            width: 100%;
+            text-align: center;
+            border: 1px solid #eaeaea;
+        }
+        .header-title {
+            font-size: 22px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 0 0 5px 0;
+        }
+        .header-subtitle {
+            font-size: 14px;
+            color: #e74c3c;
+            font-style: italic;
+            margin: 0 0 20px 0;
+            font-weight: 500;
+        }
+
+        /* Slideshow Foto */
+        .slider-container {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            margin-bottom: 25px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+        }
+        .slide {
+            display: none;
+            width: 100%;
+            height: 100%;
+        }
+        .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .prev, .next {
+            cursor: pointer;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 35px;
+            height: 35px;
+            background-color: rgba(255, 255, 255, 0.85);
+            color: #333;
+            font-weight: bold;
+            font-size: 18px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            user-select: none;
+            border: none;
+            transition: 0.3s;
+            z-index: 10;
+        }
+        .prev { left: 12px; }
+        .next { right: 12px; }
+        .prev:hover, .next:hover { background-color: #ffffff; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+
+        /* Isi Surat */
+        .letter-text {
+            text-align: left;
+            line-height: 1.7;
+            font-size: 15px;
+            color: #4a4a4a;
+            background-color: #fcfcfc;
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 5px solid #e74c3c;
+            margin-bottom: 30px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .letter-text p {
+            margin-top: 0;
+            margin-bottom: 18px;
+            white-space: pre-line;
+        }
+        .letter-text p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Barcode Area */
+        .text-divider {
+            margin: 20px 0;
+            border-bottom: 2px solid #eaeaea;
+            position: relative;
+        }
+        .divider-icon {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #fff;
+            padding: 0 10px;
+            font-size: 18px;
+            color: #e74c3c;
+        }
+        .barcode-area {
+            margin-top: 15px;
+        }
+        .barcode-hint {
+            font-size: 13px;
+            color: #999;
+            margin-bottom: 10px;
+            font-style: italic;
+        }
+        #barcode {
+            max-width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Elemen Audio untuk Musik Latar -->
+    <audio id="bg-music" loop>
+        <source src="usik.mp3" type="audio/mpeg">
+        Browser kamu tidak mendukung pemutar musik.
+    </audio>
+
+    <!-- Tombol Pembuka Pertama -->
+    <div class="welcome-screen" id="welcomeScreen">
+        <h2 style="color: #2c3e50; margin-bottom: 20px;">Ada pesan untukmu, Ca.</h2>
+        <button class="btn-open" onclick="startEverything()">Buka Surat & Putar Lagu 🎵</button>
+    </div>
+
+    <!-- Tampilan Utama Surat -->
+    <div class="main-card" id="mainCard">
+        <h1 class="header-title">Dari Rivan, Untuk Eca</h1>
+        <p class="header-subtitle">"Maaf telah menyangkal mu masih mencintaiku."</p>
+        
+        <!-- 1. Slideshow Foto Kenangan -->
+        <div class="slider-container">
+            <div class="slide"><img src="IMG_20260429_235749_903.jpg" alt="Foto 1"></div>
+            <div class="slide"><img src="IMG_20260513_134204_405.jpg" alt="Foto 2"></div>
+            <div class="slide"><img src="IMG-20260506-WA0062.jpg" alt="Foto 3"></div>
+            <div class="slide"><img src="IMG_20260503_125726_020_2.jpg" alt="Foto 4"></div>
+            <div class="slide"><img src="IMG_20260519_150327_663.jpg" alt="Foto 5"></div>
+            <div class="slide"><img src="IMG_20260606_191104_210.jpg" alt="Foto 6"></div>
+            
+            <button class="prev" onclick="plusSlides(-1)">&#10094;</button>
+            <button class="next" onclick="plusSlides(1)">&#10095;</button>
+        </div>
+
+        <!-- 2. Seluruh Pesan Utuh -->
+        <div class="letter-text">
+            <p>Hallo ca, apo lagi yo harus aku omongin yo. mungkin ini long text untuk kesekian kalinyo. aku pun bingung harus mulai darimano. karno aku dkdo yg nyuruh tidur dan, mato aku masih terang, mako aku buat ini.</p>
+            
+            <p>yang pertamo adalah alasan aku tetap menjalankan komunikasi dan selalu balik ke mu kareno ado beberapo hal, aku ngangap mu masih sayang aku. makonyo aku perjuangin, aku usahain yg membuat mu cemburu, atau aku batasi orang-orang yg membuatmu dk baik.</p>
+            
+            <p>mu tau ngapo aku gila komunikasi dan menyelesaikan masalah sebelum tidur?, karno aku riset bagaimana mu di perlakukan oleh masa lalumu, ditinggal tidur pas ado masalah, membiarkan mu ovt tiap malam.
+            
+            ngapo aku harus ribet? sejatinya wanita adalah seseorang yang rumit, selalu ingin dimanja, ingin dimengerti, dan selalu pemarah, dalam artian pemarah sayang.</p>
+            
+            <p>(sebagai pengantar)
+            aku pernah menghubungi Chat GPT berharap dia sesuai ekspektasiku. aku billing. 'Hai, hari ini aku capek banget', terus dia jawab, kalau 'aku mengerti perasaanmu, Rivan. Blabla'. Padahal bukan itu yang aku mau. justru aku berharap dia ngomeli ku. Seperti 'Kamu kenapa keras kepala banget. Kan sudah kubilang jangan blabla'.
+            
+            Akhirnya, ku buat prompt 'Jangan memotivasiku, aku justru berharap kau memarahiku' seketika ChatGpt answers sesuai Prompt. 
+            
+            Masalahnya, omelan nya tak berhenti-henti. Sampai mampus aku diomelinya. ternyata, ini soal takaran. Atau ChatGptku saja yang tak premium. Entahlah. Aku tak tahu, menurutku adakalanya, aku ingin dimengerti, adapula saat aku ingin diomeli. ChatGpt memang tak bisa menakar hal itu. dan aku selalu yakin hal itu ada padamu.</p>
+            
+            <p>lagi lagi aku bahas perasaan, wkwkw. tapi, mu dulu secinta itu dalam menjalani hubungan, kan?, mungkin aku dk dapat versi terbaikmu, tapi aku ingin membuktikan kepadamu, bahwasanya ada laki-laki yg Ndak gila cwe, ada laki-laki yg cuman gila komunikasi. 
+            
+            uhhh, sakit Bett. ketika dalam hati kecilmu billing, di dunia ini ngga ada satupun orang yg bisa mendengarkan aku, ngga ada satu orang pun yg memahami aku. mungkin mu belum tau malam-malam aku, ca. tiap menit doa tentangmu selalu berhamburan, terdengar puitis kan?. tapi itu kenyataan.
+            
+            apa lagi yg nak kubilang yo, tapi aku paham kok, sepanjang apopun aku menjelaskan, kalau aku tidak di cintai, samo kek nangkap angin kan.</p>
+            
+            <p>cintamu habis di sebelumnya? hmm, aku ngga bisa menyangkal hal itu, karena yg tau kehidupanmu dan yg paham kamu, cuman diri sendiri.
+            
+            aku pernah ingat mu billing, mari mengundurkan diri dari hal hal yang mempertanyakan kelayakan diri. hmm kalau aku pandang wajah teduhmu ulang, meski di versi ini mu dk secinta kemarin, aku rasa itu udah benar benar membuat aku jatuh cinta berkali-kali. iyap, berkali-kali.
+            
+            sayangnya, sesuatu terucap dalam ketikanmu, meski tidak keluar dari mulutmu, tapi mampu membuat aku terpental beberapa kilometer dari harapan. nihil memang. 
+            
+            kenapa aku ngga ketemu di versi terbaikmu yo, ca? betul ca, tuhan pintar mengatur skenario kehidupan.</p>
+            
+            <p>maren, mu nengok masa lalu mu nangis saja tidak tega, sedangkan aku yg berdarah-darah mu perhatiin saja tidak.
+            
+            uhh, tapi ca, hubungan selalu berkarib dengan dungu, dan aku menunggumu, apokah termasuk dengan kedunguan yg kedua?
+            
+            udah ahh, ca. kurasa dk mu baca, aku dk di titik capek sekarang ca, seharusnyo masih ada hal-hal yg ingin aku perjuangkan demi hubungan, tapi apakah perjuangan akan mendapatkan hasil kalau yg di perjuangkan sudah 000, 01%?</p>
+        </div>
+
+        <div class="text-divider">
+            <span class="divider-icon">&#10084;</span>
+        </div>
+
+        <!-- Bagian 3: Barcode Khusus -->
+        <div class="barcode-area">
+            <div class="barcode-hint">Eca, scan barcode ini ya...</div>
+            <svg id="barcode"></svg>
+        </div>
+
+    </div>
+
+    <script>
+        // Membuka surat dan menyalakan musik latar sekaligus
+        function startEverything() {
+            document.getElementById('welcomeScreen').style.display = 'none';
+            document.getElementById('mainCard').style.display = 'block';
+            
+            let audio = document.getElementById('bg-music');
+            audio.play().catch(function(error) {
+                console.log("Pemutaran musik otomatis tertahan oleh kebijakan browser.");
+            });
+            
+            showSlides(slideIndex);
+        }
+
+        // Logika Slider Foto
+        let slideIndex = 1;
+
+        function plusSlides(n) {
+            showSlides(slideIndex += n);
+        }
+
+        function showSlides(n) {
+            let i;
+            let slides = document.getElementsByClassName("slide");
+            if (slides.length === 0) return;
+            if (n > slides.length) {slideIndex = 1}    
+            if (n < 1) {slideIndex = slides.length}
+            for (i = 0; i < slides.length; i++) {
+                slides[i].style.display = "none";  
+            }
+            slides[slideIndex-1].style.display = "block";  
+        }
+
+        // Generator Barcode Otomatis
+        JsBarcode("#barcode", "MUNGKIN TERSAMPAIKAN LEWAT DOA", {
+            format: "CODE128",
+            lineColor: "#2c3e50",
+            width: 2,
+            height: 50,
+            displayValue: false
+        });
+    </script>
+
+</body>
+</html>
